@@ -31,21 +31,24 @@ function createYearDisplay(year) {
 
 function flipLastDigit() {
     const flipContainers = document.querySelectorAll('.flip-container');
-    const lastDigit = flipContainers[flipContainers.length - 1];
+    const lastDigitContainer = flipContainers[flipContainers.length - 1];
     
-    if (lastDigit && !hasFlipped) {
+    if (lastDigitContainer && !hasFlipped) {
         hasFlipped = true;
         
-        const flipBack = lastDigit.querySelector('.flip-back');
-        flipBack.textContent = '6';
+        const targetYearStr = targetYear.toString();
+        const newDigit = targetYearStr[targetYearStr.length - 1];
         
-        lastDigit.classList.add('flipping');
+        const flipBack = lastDigitContainer.querySelector('.flip-back');
+        flipBack.textContent = newDigit; 
+        
+        lastDigitContainer.classList.add('flipping');
         
         setTimeout(() => {
-            const flipFront = lastDigit.querySelector('.flip-front');
-            flipFront.textContent = '6';
-            lastDigit.classList.remove('flipping');
-            lastDigit.style.transform = 'rotateX(-180deg)';
+            const flipFront = lastDigitContainer.querySelector('.flip-front');
+            flipFront.textContent = newDigit; 
+            lastDigitContainer.classList.remove('flipping');
+            lastDigitContainer.style.transform = 'rotateX(-180deg)';
         }, 1200);
     }
 }
@@ -59,7 +62,10 @@ function updateCountdown() {
     const gap = newYear - now;
 
     if (gap < 0) {
-        document.querySelector('.message').innerHTML = `<div class="celebration-text">🎊 HAPPY NEW YEAR ${targetYear}! 🎊</div>`;
+        const messageDiv = document.querySelector('.message');
+        if (messageDiv) {
+            messageDiv.innerHTML = `<div class="celebration-text">🎊 HAPPY NEW YEAR ${targetYear}! 🎊</div>`;
+        }
         startConfettiAnimation();
         
         document.getElementById('days').textContent = '00';
@@ -69,8 +75,7 @@ function updateCountdown() {
         return;
     }
 
-    // Kích hoạt flip khi còn 5 giây
-    if (gap <= 5000 && !hasFlipped) {
+    if (gap <= 3000 && !hasFlipped) {
         flipLastDigit();
     }
 
@@ -89,9 +94,10 @@ function updateCountdown() {
     document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
     document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
 
-    if (seconds !== updateCountdown.lastSecond) {
-        document.getElementById('seconds').classList.add('pulse');
-        setTimeout(() => document.getElementById('seconds').classList.remove('pulse'), 300);
+    const secondsEl = document.getElementById('seconds');
+    if (seconds !== updateCountdown.lastSecond && secondsEl) {
+        secondsEl.classList.add('pulse');
+        setTimeout(() => secondsEl.classList.remove('pulse'), 300);
     }
     updateCountdown.lastSecond = seconds;
 }
@@ -100,6 +106,7 @@ updateCountdown.lastSecond = -1;
 
 function initializeStarField() {
     const starsContainer = document.getElementById('stars');
+    if (!starsContainer) return;
     for (let i = 0; i < 100; i++) {
         const star = document.createElement('div');
         star.className = 'star';
@@ -122,7 +129,6 @@ function generateSnowflake() {
     snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
     snowflake.style.opacity = Math.random() * 0.6 + 0.3;
     document.body.appendChild(snowflake);
-
     setTimeout(() => snowflake.remove(), 8000);
 }
 
@@ -130,40 +136,24 @@ function launchFirework() {
     const colors = ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4d96ff', '#b95eff'];
     const x = Math.random() * window.innerWidth;
     const y = Math.random() * window.innerHeight * 0.7;
-
     for (let i = 0; i < 30; i++) {
         const particle = document.createElement('div');
         particle.className = 'firework';
         particle.style.left = x + 'px';
         particle.style.top = y + 'px';
         particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-        
         const angle = (Math.PI * 2 * i) / 30;
         const velocity = Math.random() * 100 + 50;
-        
         document.body.appendChild(particle);
-
-        let posX = x;
-        let posY = y;
-        let velX = Math.cos(angle) * velocity;
-        let velY = Math.sin(angle) * velocity;
-        
+        let posX = x; let posY = y;
+        let velX = Math.cos(angle) * velocity; let velY = Math.sin(angle) * velocity;
         const animateParticle = () => {
-            velY += 2;
-            posX += velX / 10;
-            posY += velY / 10;
-            
-            particle.style.left = posX + 'px';
-            particle.style.top = posY + 'px';
+            velY += 2; posX += velX / 10; posY += velY / 10;
+            particle.style.left = posX + 'px'; particle.style.top = posY + 'px';
             particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.02;
-            
-            if (parseFloat(particle.style.opacity) > 0) {
-                requestAnimationFrame(animateParticle);
-            } else {
-                particle.remove();
-            }
+            if (parseFloat(particle.style.opacity) > 0) requestAnimationFrame(animateParticle);
+            else particle.remove();
         };
-        
         requestAnimationFrame(animateParticle);
     }
 }
@@ -185,7 +175,6 @@ function initializeFloatingParticles() {
 
 function startConfettiAnimation() {
     const colors = ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4d96ff', '#b95eff', '#ff9ff3', '#feca57'];
-    
     const confettiInterval = setInterval(() => {
         for (let i = 0; i < 5; i++) {
             const confetti = document.createElement('div');
@@ -197,32 +186,28 @@ function startConfettiAnimation() {
             confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
             confetti.style.animationDelay = Math.random() + 's';
             document.body.appendChild(confetti);
-            
             setTimeout(() => confetti.remove(), 5000);
         }
     }, 100);
-    
     setTimeout(() => clearInterval(confettiInterval), 30000);
 }
 
 function initializeAllAnimations() {
     initializeStarField();
     initializeFloatingParticles();
-    
     setInterval(generateSnowflake, 300);
-    
     setInterval(() => {
-        if (Math.random() > 0.7) {
-            launchFirework();
-        }
+        if (Math.random() > 0.7) launchFirework();
     }, 2000);
 }
 
 function startCountdownTimer() {
-    createYearDisplay(targetYear);
+    const currentYear = new Date().getFullYear(); 
+    createYearDisplay(currentYear); 
+    
     updateCountdown();
     setInterval(updateCountdown, 1000);
-}
+} 
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
