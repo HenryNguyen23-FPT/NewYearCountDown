@@ -1,10 +1,65 @@
+let targetYear = new Date().getFullYear() + 1;
+let hasFlipped = false;
+
+function createYearDisplay(year) {
+    const yearStr = year.toString();
+    const yearDisplay = document.getElementById('yearDisplay');
+    yearDisplay.innerHTML = '';
+    
+    for (let i = 0; i < yearStr.length; i++) {
+        const digitContainer = document.createElement('span');
+        digitContainer.className = 'year-digit';
+        
+        const flipContainer = document.createElement('div');
+        flipContainer.className = 'flip-container';
+        flipContainer.dataset.index = i;
+        
+        const flipFront = document.createElement('div');
+        flipFront.className = 'flip-front';
+        flipFront.textContent = yearStr[i];
+        
+        const flipBack = document.createElement('div');
+        flipBack.className = 'flip-back';
+        flipBack.textContent = yearStr[i];
+        
+        flipContainer.appendChild(flipFront);
+        flipContainer.appendChild(flipBack);
+        digitContainer.appendChild(flipContainer);
+        yearDisplay.appendChild(digitContainer);
+    }
+}
+
+function flipLastDigit() {
+    const flipContainers = document.querySelectorAll('.flip-container');
+    const lastDigit = flipContainers[flipContainers.length - 1];
+    
+    if (lastDigit && !hasFlipped) {
+        hasFlipped = true;
+        
+        const flipBack = lastDigit.querySelector('.flip-back');
+        flipBack.textContent = '6';
+        
+        lastDigit.classList.add('flipping');
+        
+        setTimeout(() => {
+            const flipFront = lastDigit.querySelector('.flip-front');
+            flipFront.textContent = '6';
+            lastDigit.classList.remove('flipping');
+            lastDigit.style.transform = 'rotateX(-180deg)';
+        }, 1200);
+    }
+}
+
 function updateCountdown() {
-    const newYear = new Date('January 1, 2026 00:00:00').getTime();
     const now = new Date().getTime();
+    const currentYear = new Date().getFullYear();
+    targetYear = currentYear + 1;
+    
+    const newYear = new Date(`January 1, ${targetYear} 00:00:00`).getTime();
     const gap = newYear - now;
 
     if (gap < 0) {
-        document.querySelector('.message').innerHTML = '<div class="celebration-text">🎊 HAPPY NEW YEAR 2026! 🎊</div>';
+        document.querySelector('.message').innerHTML = `<div class="celebration-text">🎊 HAPPY NEW YEAR ${targetYear}! 🎊</div>`;
         startConfettiAnimation();
         
         document.getElementById('days').textContent = '00';
@@ -12,6 +67,11 @@ function updateCountdown() {
         document.getElementById('minutes').textContent = '00';
         document.getElementById('seconds').textContent = '00';
         return;
+    }
+
+    // Kích hoạt flip khi còn 5 giây
+    if (gap <= 5000 && !hasFlipped) {
+        flipLastDigit();
     }
 
     const second = 1000;
@@ -159,6 +219,7 @@ function initializeAllAnimations() {
 }
 
 function startCountdownTimer() {
+    createYearDisplay(targetYear);
     updateCountdown();
     setInterval(updateCountdown, 1000);
 }
