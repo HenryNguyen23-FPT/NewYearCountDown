@@ -1,102 +1,471 @@
-@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Hedvig+Letters+Serif:opsz@12..24&family=Nova+Square&family=Poppins&family=Roboto&family=Work+Sans&display=swap');
-
-
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Poppins:wght@300;400;600&display=swap');
 
 * {
     margin: 0;
     padding: 0;
-    color: 	#d0d0d0;
-    
+    box-sizing: border-box;
 }
-
-.container {
-    position: absolute;
-    top: 80px;
-    left: 100px;
-    right: 100px;
-    bottom: 80px;
-    background-image: url('../images/bg5.jpg');
-    background-repeat: no-repeat;
-    border-radius: 5px;
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;  
-    flex-direction: column;
-    box-shadow: 0 100px 100px rgba(0,0,0,0.5), 
-    0 0 0 100px rgba(0, 0, 0, 0.3);
-}
-                
-
 
 body {
-    background-image: url(../images/bg4.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    height: 100vh;
     font-family: 'Poppins', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    margin: 0;
     overflow: hidden;
+    height: 100vh;
+    background: linear-gradient(45deg, #0a0e27, #1a1a3e, #2d1b4e);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    animation: gradientShift 15s ease infinite;
+    position: relative;
 }
 
-h1 {
+/* Overlay để làm tối ảnh nền (nếu cần) */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    /* Tăng số 0.3 lên 0.5-0.7 nếu muốn tối hơn */
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Update z-index để nội dung hiện trên overlay */
+.container {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     text-align: center;
-    font-size: 8em;
-    line-height: 0.7em;
-    
-    margin: 12px 0 60px;
+    animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+body.static-bg {
+    animation: none;
+}
+
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+/* Stars Background */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Snow Effect */
+.snowflake {
+    position: absolute;
+    top: -10px;
+    color: #fff;
+    font-size: 1em;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: fall linear infinite;
+    text-shadow: 0 0 5px #fff;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+/* Container */
+.container {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Title */
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4em;
+    font-weight: 900;
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff, #b95eff);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientText 5s ease infinite;
+    margin-bottom: 20px;
+    text-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+    filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.3));
+}
+
+@keyframes gradientText {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
 }
 
 h1 span {
     display: block;
-    font-weight: 300;
-    letter-spacing: 6px;
-    font-size: 0.2em;
+    font-size: 0.3em;
+    font-weight: 400;
+    letter-spacing: 8px;
+    margin-bottom: 10px;
+    opacity: 0.9;
 }
 
+/* Countdown Container */
 .countdown {
     display: flex;
-    transform: scale(2);
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
+/* Time Card */
 .time {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 15px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 30px 40px;
+    min-width: 150px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.05),
+        0 0 40px rgba(255, 107, 107, 0.2);
+    transition: all 0.3s ease;
+    animation: float 3s ease-in-out infinite;
 }
+
+.time:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.time:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.time:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.time:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.time:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow:
+        0 15px 50px rgba(0, 0, 0, 0.4),
+        inset 0 0 30px rgba(255, 255, 255, 0.1),
+        0 0 60px rgba(255, 107, 107, 0.4);
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+
+.time::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff, #b95eff);
+    border-radius: 20px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: rotate 4s linear infinite;
+}
+
+.time:hover::before {
+    opacity: 0.7;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 
 .time h2 {
-    font-weight: bold;
-    font-size: 36px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4em;
+    font-weight: 900;
+    color: #fff;
+    margin: 0;
+    text-shadow:
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 107, 107, 0.6),
+        0 0 30px rgba(255, 107, 107, 0.4);
+    animation: glow 2s ease-in-out infinite;
     line-height: 1;
-    margin: 0 0 5px;
 }
 
-@media(max-width: 500px) {
-    h1{
-        font-size: 45px;
+@keyframes glow {
+
+    0%,
+    100% {
+        text-shadow:
+            0 0 10px rgba(255, 255, 255, 0.8),
+            0 0 20px rgba(255, 107, 107, 0.6),
+            0 0 30px rgba(255, 107, 107, 0.4);
     }
 
-    .time{
-        margin: 5px;
+    50% {
+        text-shadow:
+            0 0 20px rgba(255, 255, 255, 1),
+            0 0 30px rgba(255, 107, 107, 0.8),
+            0 0 40px rgba(255, 107, 107, 0.6),
+            0 0 50px rgba(255, 107, 107, 0.4);
+    }
+}
+
+
+.time small {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #d0d0d0;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
+
+@keyframes numberPulse {
+    0% {
+        transform: scale(1);
     }
 
-    .time h2{
-        font-size: 12px;
+    50% {
+        transform: scale(1.2);
+        color: #ffd93d;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: numberPulse 0.3s ease;
+}
+
+.firework {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+
+.message {
+    margin-top: 50px;
+    font-size: 1.2em;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 2px;
+    animation: fadeInOut 3s ease-in-out infinite;
+    transition: all 0.5s ease;
+}
+
+@keyframes fadeInOut {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.celebration-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3em;
+    font-weight: 900;
+    color: #fff;
+    text-shadow:
+        0 0 20px #ffd93d,
+        0 0 40px #ffd93d,
+        0 0 60px #ff6b6b,
+        0 0 80px #ff6b6b;
+    animation: celebrationPulse 1s ease-in-out infinite;
+    margin-top: 30px;
+}
+
+@keyframes celebrationPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        text-shadow:
+            0 0 20px #ffd93d,
+            0 0 40px #ffd93d,
+            0 0 60px #ff6b6b,
+            0 0 80px #ff6b6b;
+    }
+
+    50% {
+        transform: scale(1.1);
+        text-shadow:
+            0 0 30px #ffd93d,
+            0 0 50px #ffd93d,
+            0 0 70px #ff6b6b,
+            0 0 90px #ff6b6b,
+            0 0 110px #b95eff;
+    }
+}
+
+/* Confetti */
+.confetti {
+    position: absolute;
+    top: -10px;
+    opacity: 0.9;
+    pointer-events: none;
+    animation: confettiFall linear forwards;
+    transform-origin: center;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    h1 {
+        font-size: 2.5em;
+    }
+
+    .countdown {
+        gap: 15px;
+    }
+
+    .time {
+        padding: 20px 25px;
+        min-width: 120px;
+    }
+
+    .time h2 {
+        font-size: 2.5em;
     }
 
     .time small {
-        font-size: 10px;
+        font-size: 0.7em;
+    }
+}
+
+@media(max-width: 480px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .time {
+        padding: 15px 20px;
+        min-width: 90px;
+    }
+
+    .time h2 {
+        font-size: 2em;
+    }
+
+    .message {
+        font-size: 1em;
     }
 }
