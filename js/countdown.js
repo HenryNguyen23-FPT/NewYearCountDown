@@ -1,7 +1,44 @@
-// All Animation Effects
+function updateCountdown() {
+    const newYear = new Date('January 1, 2026 00:00:00').getTime();
+    const now = new Date().getTime();
+    const gap = newYear - now;
 
-// Create Stars
-function createStars() {
+    if (gap < 0) {
+        document.querySelector('.message').innerHTML = '<div class="celebration-text">🎊 HAPPY NEW YEAR 2026! 🎊</div>';
+        startConfettiAnimation();
+        
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        return;
+    }
+
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    const days = Math.floor(gap / day);
+    const hours = Math.floor((gap % day) / hour);
+    const minutes = Math.floor((gap % hour) / minute);
+    const seconds = Math.floor((gap % minute) / second);
+
+    document.getElementById('days').textContent = String(days).padStart(2, '0');
+    document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+    document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+    document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+    if (seconds !== updateCountdown.lastSecond) {
+        document.getElementById('seconds').classList.add('pulse');
+        setTimeout(() => document.getElementById('seconds').classList.remove('pulse'), 300);
+    }
+    updateCountdown.lastSecond = seconds;
+}
+
+updateCountdown.lastSecond = -1;
+
+function initializeStarField() {
     const starsContainer = document.getElementById('stars');
     for (let i = 0; i < 100; i++) {
         const star = document.createElement('div');
@@ -16,8 +53,7 @@ function createStars() {
     }
 }
 
-// Create Snowflakes
-function createSnowflake() {
+function generateSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.className = 'snowflake';
     snowflake.innerHTML = '❄';
@@ -30,8 +66,7 @@ function createSnowflake() {
     setTimeout(() => snowflake.remove(), 8000);
 }
 
-// Create Fireworks
-function createFirework() {
+function launchFirework() {
     const colors = ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4d96ff', '#b95eff'];
     const x = Math.random() * window.innerWidth;
     const y = Math.random() * window.innerHeight * 0.7;
@@ -53,7 +88,7 @@ function createFirework() {
         let velX = Math.cos(angle) * velocity;
         let velY = Math.sin(angle) * velocity;
         
-        const animate = () => {
+        const animateParticle = () => {
             velY += 2;
             posX += velX / 10;
             posY += velY / 10;
@@ -63,18 +98,17 @@ function createFirework() {
             particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.02;
             
             if (parseFloat(particle.style.opacity) > 0) {
-                requestAnimationFrame(animate);
+                requestAnimationFrame(animateParticle);
             } else {
                 particle.remove();
             }
         };
         
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateParticle);
     }
 }
 
-// Floating Particles
-function createParticles() {
+function initializeFloatingParticles() {
     for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
@@ -89,11 +123,10 @@ function createParticles() {
     }
 }
 
-// Create Confetti (for celebration)
-function createConfetti() {
+function startConfettiAnimation() {
     const colors = ['#ff6b6b', '#ffd93d', '#6bcf7f', '#4d96ff', '#b95eff', '#ff9ff3', '#feca57'];
     
-    setInterval(() => {
+    const confettiInterval = setInterval(() => {
         for (let i = 0; i < 5; i++) {
             const confetti = document.createElement('div');
             confetti.className = 'confetti';
@@ -108,27 +141,34 @@ function createConfetti() {
             setTimeout(() => confetti.remove(), 5000);
         }
     }, 100);
+    
+    setTimeout(() => clearInterval(confettiInterval), 30000);
 }
 
-// Initialize all animations
-function initAnimations() {
-    createStars();
-    createParticles();
+function initializeAllAnimations() {
+    initializeStarField();
+    initializeFloatingParticles();
     
-    // Snowflakes every 300ms
-    setInterval(createSnowflake, 300);
+    setInterval(generateSnowflake, 300);
     
-    // Random fireworks every few seconds
     setInterval(() => {
         if (Math.random() > 0.7) {
-            createFirework();
+            launchFirework();
         }
     }, 2000);
 }
 
-// Auto-start animations when page loads
+function startCountdownTimer() {
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAnimations);
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeAllAnimations();
+        startCountdownTimer();
+    });
 } else {
-    initAnimations();
+    initializeAllAnimations();
+    startCountdownTimer();
 }
